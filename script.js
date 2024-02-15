@@ -1,4 +1,5 @@
 const addBtn = document.querySelector('#add-btn');
+const outputEl = document.querySelector('#output');
 
 function getTodos() {
   const todoData = localStorage.getItem('todos');
@@ -9,7 +10,10 @@ function getTodos() {
 function storeTodo(text) {
   const todos = getTodos();
 
-  todos.push(text);
+  todos.push({
+    text: text,
+    completed: false
+  });
 
   localStorage.setItem('todos', JSON.stringify(todos));
 }
@@ -27,14 +31,14 @@ function addTodo() {
 
 function outputTodos() {
   const todos = getTodos();
-  const outputEl = document.querySelector('#output');
+
 
   if (todos.length) {
     outputEl.innerHTML = '';
   }
 
-  todos.forEach(text => {
-    outputEl.insertAdjacentHTML('beforeend', `<p>${text}</p>`)
+  todos.forEach(todoObj => {
+    outputEl.insertAdjacentHTML('beforeend', `<p data-status="${todoObj.completed}">${todoObj.text}</p>`)
   });
 }
 
@@ -45,6 +49,22 @@ async function outputQuote() {
   const { content } = await fetch(url).then(res => res.json());
 
   quoteEl.innerText = `"${content}"`;
+}
+
+function toggleTodoStatus(e) {
+  const el = e.target;
+
+  if (el.tagName === 'P') {
+    const status = el.dataset.status;
+
+    if (status === 'false') {
+      el.style.textDecoration = 'none';
+      el.dataset.status = 'true';
+    } else {
+      el.style.textDecoration = 'line-through';
+      el.dataset.status = 'false';
+    }
+  }
 }
 
 function initializeServiceWorker() {
@@ -70,7 +90,9 @@ function init() {
 
   outputTodos();
 
+
   addBtn.addEventListener('click', addTodo);
+  outputEl.addEventListener('click', toggleTodoStatus);
 }
 
 init();

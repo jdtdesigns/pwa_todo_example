@@ -12,7 +12,7 @@ self.addEventListener('install', function (event) {
   );
 });
 
-
+// Network First
 self.addEventListener('fetch', function (event) {
   event.respondWith(
     fetch(event.request).then(function (response) {
@@ -26,10 +26,11 @@ self.addEventListener('fetch', function (event) {
   );
 });
 
-// self.addEventListener('fetch', function (event) {
-//   event.respondWith(
-//     caches.match(event.request).then(function (response) {
-//       return response || fetch(event.request);
-//     })
-//   );
-// });
+// Cache First
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then(function (response) {
+      return response || fetch(event.request);
+    })
+  );
+});
