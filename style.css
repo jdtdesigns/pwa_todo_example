@@ -1,0 +1,15 @@
+.row {
+  display: flex;
+}
+
+.col {
+  flex: 1;
+}
+
+.col-3 {
+  flex: 3;
+}
+
+#output {
+  padding: 0 3%;
+}
