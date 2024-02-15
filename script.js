@@ -38,19 +38,41 @@ function outputTodos() {
   });
 }
 
-outputTodos();
+async function outputQuote() {
+  const url = 'https://api.quotable.io/random';
+  const quoteEl = document.querySelector('#quote');
 
-addBtn.addEventListener('click', addTodo);
+  const { content } = await fetch(url).then(res => res.json());
 
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registered successfully:', registration);
-      })
-      .catch(error => {
-        console.log('Service Worker registration failed:', error);
-      });
-  });
+  quoteEl.innerText = `"${content}"`;
 }
+
+function initializeServiceWorker() {
+  if (navigator.onLine) {
+    outputQuote();
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered successfully');
+        })
+        .catch(error => {
+          console.log('Service Worker registration failed:', error);
+        });
+    });
+  }
+}
+
+function init() {
+  initializeServiceWorker();
+
+  outputTodos();
+
+  addBtn.addEventListener('click', addTodo);
+}
+
+init();
+
+
